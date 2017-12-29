@@ -356,3 +356,22 @@ let rec traverse (triangle:int list list) total index =
 let getResult = 
     traverse readLinesFromFile [75] 1
     |> List.max
+
+// Problem 19
+let getSundays =
+    [1901 .. 2000]
+    |> List.collect (fun x -> [1 .. 12] |> List.map(fun y -> DateTime(x, y, 1)))
+    |> List.filter (fun x -> x.DayOfWeek = DayOfWeek.Sunday)
+    |> List.length
+
+//Problem 20
+let getFactorialDigitSum =
+    let factorString =
+        [1I .. 100I]
+        |> List.rev
+        |> List.fold (*) 1I
+        |> string
+
+    factorString
+    Array.sumBy (fun x -> System.Int32.Parse(x.ToString())) (factorString.ToCharArray())
+    // |> Array.map (int32))
