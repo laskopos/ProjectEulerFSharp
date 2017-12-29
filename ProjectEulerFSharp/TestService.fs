@@ -329,6 +329,30 @@ open System
 // Problem 18
 let readLinesFromFile =
     IO.File.ReadAllLines "C:\\temp\\euler_problem18.txt"
-    |> Seq.map (fun x -> 
+    |> Array.map (fun x -> 
                     let trimmed = x.TrimStart ' ' 
-                    trimmed.Split ' '  |> Seq.map(fun x -> Int32.Parse(x)))
+                    trimmed.Split ' '  |> Array.map(fun x -> Int32.Parse(x)) |> Array.toList)
+    |> Array.toList
+
+let getNewTotal (currentRow:int list) (total: int list) = 
+    let head = total.Head
+    let tail = List.nth total (total.Length-1)
+    let body = total |> Seq.windowed 2 |> Seq.map (fun l -> Seq.max l) |> Seq.toList
+
+    let newList = List.append total [tail]
+
+    List.map2 (+) currentRow newList
+    List.map2 (+) currentRow (List.concat [[head]; body; [tail]])
+
+let rec traverse (triangle:int list list) total index =
+    let row = triangle.[index]
+    let newTotal = getNewTotal row total
+
+    if index < (List.length triangle) - 1 then
+        traverse triangle newTotal (index + 1)
+    else
+        newTotal
+
+let getResult = 
+    traverse readLinesFromFile [75] 1
+    |> List.max
