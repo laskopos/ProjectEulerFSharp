@@ -204,7 +204,7 @@ let findMaximumIn2DArray =
 let triangleNum (num:int64) = [1L .. num] |> Seq.sum
 
 let getDivisors (num:int64) =
-    let upperBound = int64(Math.Sqrt(double(num)))
+    let upperBound = int64(System.Math.Sqrt(double(num)))
     [1L .. upperBound] 
     |> Seq.filter (fun x -> num % x = 0L)
     |> Seq.collect (fun x -> [x; num/x])
@@ -375,3 +375,23 @@ let getFactorialDigitSum =
     factorString
     Array.sumBy (fun x -> System.Int32.Parse(x.ToString())) (factorString.ToCharArray())
     // |> Array.map (int32))
+
+
+// Problem 21
+let getSumOfDivisors num =
+    getDivisors num
+    |> Seq.filter (fun x -> x <> num)
+    |> Seq.fold (+) 0L
+
+let getSumOfAmicableNumbers num = 
+    let sumOfDivisors = getSumOfDivisors num
+    if getSumOfDivisors (sumOfDivisors) = num && num <> sumOfDivisors then
+        // num + sumOfDivisors
+        num
+    else
+        0L
+
+let getProblem21Result =
+    [1L .. 9999L]
+    |> List.map getSumOfAmicableNumbers
+    |> List.fold (+) 0L
