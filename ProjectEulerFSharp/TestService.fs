@@ -327,8 +327,8 @@ let countOfWords =
 
 open System
 // Problem 18
-let readLinesFromFile =
-    IO.File.ReadAllLines "C:\\temp\\euler_problem18.txt"
+let readLinesFromFile path =
+    IO.File.ReadAllLines path
     |> Array.map (fun x -> 
                     let trimmed = x.TrimStart ' ' 
                     trimmed.Split ' '  |> Array.map(fun x -> Int32.Parse(x)) |> Array.toList)
@@ -354,7 +354,7 @@ let rec traverse (triangle:int list list) total index =
         newTotal
 
 let getResult = 
-    traverse readLinesFromFile [75] 1
+    traverse (readLinesFromFile("C:\\temp\\euler_problem18.txt")) [75] 1
     |> List.max
 
 // Problem 19
@@ -395,3 +395,22 @@ let getProblem21Result =
     [1L .. 9999L]
     |> List.map getSumOfAmicableNumbers
     |> List.fold (+) 0L
+
+// Problem 22
+let getNameScore (name:string) =
+    name.ToCharArray()
+    |> Array.map (fun x -> (int32 x) - (int32 'A') + 1)
+    |> Array.reduce (+)
+
+let getProblem22Result =
+    let input = System.IO.File.ReadAllLines "C:\\temp\\euler_problem22.txt"
+    
+    let lines = 
+        input.[0].Trim().Split(',')
+        |> Array.map (fun x -> x.Replace("\"", "").ToUpper())
+        |> Array.sort
+
+    lines
+    |> Array.map getNameScore
+    |> Array.map2 (( * )) [|1 .. lines.Length|]
+    |> Array.sum
