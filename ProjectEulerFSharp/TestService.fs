@@ -208,6 +208,7 @@ let getDivisors (num:int64) =
     [1L .. upperBound] 
     |> Seq.filter (fun x -> num % x = 0L)
     |> Seq.collect (fun x -> [x; num/x])
+    |> Seq.filter (fun x -> x <> num)
 
 let naturalNumbers = Seq.unfold (fun x -> Some(x, x+1L)) 1L
 
@@ -380,6 +381,7 @@ let getFactorialDigitSum =
 // Problem 21
 let getSumOfDivisors num =
     getDivisors num
+    |> Seq.distinct
     |> Seq.filter (fun x -> x <> num)
     |> Seq.fold (+) 0L
 
@@ -414,3 +416,34 @@ let getProblem22Result =
     |> Array.map getNameScore
     |> Array.map2 (( * )) [|1 .. lines.Length|]
     |> Array.sum
+
+// Problem 23
+let findDivisors(n) =
+   let upperBound = int32(sqrt(double(n)))
+ 
+   [1..upperBound]
+   |> Seq.filter (fun x -> n % x = 0)
+   |> Seq.collect (fun x -> [x; n/x])
+   |> Seq.filter (fun x -> x <> n)
+   |> Seq.distinct
+let isAbundantNumber2(n) = (findDivisors(n) |> Seq.sum) > n
+
+let isAbundantNumber num =
+    getSumOfDivisors num > num
+
+let abundantNumbers = 
+    [1L .. 28122L]
+    |> List.filter isAbundantNumber
+
+let sumOf2AbundantNumbers =
+    abundantNumbers
+    |> List.collect (fun x -> abundantNumbers |> List.map (fun y -> x + y))
+    |> List.filter (fun n -> n <= 28123L)
+    |> List.distinct
+
+let getProblem23Result =
+    let abSum = sumOf2AbundantNumbers
+                |> List.sum
+
+
+    ([1L .. 28123L] |> List.sum) - (abSum)
